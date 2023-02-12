@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import {
   UserCircleIcon,
   PhotoIcon,
@@ -23,7 +24,11 @@ import styles from "../styles/Home.module.css";
 export default function Home() {
   const account = useAccount();
 
-  const { startMint } = useMint({ collectionId: "22c6ecefe246" });
+  const router = useRouter();
+  // fall back to default collectionid
+  const collectionId = router.query.collectionId;
+
+  const { startMint } = useMint({ collectionId: collectionId });
   const { signMessage } = useSignMessage({ message: "<MESSAGE>" });
   const { getSharedSecret } = useGetSharedSecret({
     publicKey: "Dgq5B8i5NJJfPoUgpkFZDzRr84zd1BJrUBntJt1EBvgd",
@@ -77,7 +82,7 @@ export default function Home() {
                       <img src="../kirby.jpg" width="100px" />
                     </div>
 
-                    <div aria-hidden="true" class="marquee__group">
+                    <div aria-hidden="true" className="marquee__group">
                       <img src="../kirby.jpg" width="100px" />
                       <img src="../kirby.jpg" width="100px" />
                       <img src="../kirby.jpg" width="100px" />
@@ -129,7 +134,13 @@ export default function Home() {
                               <p className="mt-1 text-sm text-gray-500 mb-2">
                                 please...
                               </p>
-                              <MintButton collectionId="22c6ecefe246" />
+                              {router.query.collectionId ? (
+                                <MintButton
+                                  collectionId={router.query.collectionId}
+                                />
+                              ) : (
+                                <p>Collection ID query parameter required</p>
+                              )}
                             </div>
                           </div>
                         </div>
